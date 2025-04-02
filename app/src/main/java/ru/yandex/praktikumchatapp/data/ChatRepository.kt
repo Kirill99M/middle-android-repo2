@@ -7,11 +7,11 @@ import kotlinx.coroutines.flow.retryWhen
 class ChatRepository(
     private val api: ChatApi = ChatApi()
 ) {
-    private var currentDelay = 100L
-    fun getReplyMessage(): Flow<String> {
+    fun getReplyMessage(currentDelay: Long = 100L): Flow<String> {
+        var currentDelayInternal = currentDelay
         return api.getReply().retryWhen { _, attempt ->
-            delay(currentDelay)
-            currentDelay *= (attempt + 1)
+            delay(currentDelayInternal)
+            currentDelayInternal *= (attempt + 1)
             true
         }
     }
